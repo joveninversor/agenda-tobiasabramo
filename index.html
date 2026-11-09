@@ -303,32 +303,6 @@ border: 1.5px solid transparent;
 .cal-day.weekend { color: #cbd5e1; cursor: default; }
 .cal-day.empty { cursor: default; }
 
-/* ——— MEETING TYPE ——— */
-.type-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-gap: 12px;
-}
-
-.type-card {
-background: var(--white);
-border: 1.5px solid var(--gray-light);
-border-radius: 10px;
-padding: 18px;
-text-align: left;
-cursor: pointer;
-font-family: inherit;
-color: var(--dark);
-transition: all 0.15s;
-}
-
-.type-card:hover, .type-card:focus-visible { border-color: var(--orange); background: #fff8ec; outline: none; }
-.type-card.selected { border-color: var(--orange); background: #fff8ec; }
-
-.type-name { display: block; font-size: 15px; font-weight: 700; }
-.type-duration { display: block; margin-top: 4px; font-size: 13px; font-weight: 700; color: var(--orange-dark); }
-.type-desc { display: block; margin-top: 8px; font-size: 13px; color: var(--gray); line-height: 1.4; }
-
 /* ——— TIME SLOTS ——— */
 .slots-grid {
 display: grid;
@@ -378,7 +352,6 @@ margin-bottom: 20px;
 font-size: 14px;
 color: var(--dark2);
 display: flex;
-flex-wrap: wrap;
 align-items: center;
 gap: 8px;
 }
@@ -622,12 +595,12 @@ header span.tagline { display: none; }
 </svg>
 </div>
 <h2>Agendá tu <span>Asesoría</span></h2>
-<p>Elegí el tipo de reunión, el día y el horario que mejor te queden. La reunión es 100% virtual por Google Meet.</p>
+<p>Elegí el día y horario que mejor te quede. La reunión es 100% virtual por Google Meet.</p>
 <div class="hero-pills">
 <div class="pill">
 <!-- clock icon -->
 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-60 o 30 minutos
+60 minutos
 </div>
 <div class="pill">
 <!-- video icon -->
@@ -649,53 +622,24 @@ Lunes a Viernes
 <div class="step-bar">
 <div class="step-item active" id="si-1">
 <div class="step-num">1</div>
-<span class="step-label">Tipo</span>
+<span class="step-label">Fecha</span>
 </div>
 <div class="step-sep"></div>
 <div class="step-item" id="si-2">
 <div class="step-num">2</div>
-<span class="step-label">Fecha</span>
+<span class="step-label">Horario</span>
 </div>
 <div class="step-sep"></div>
 <div class="step-item" id="si-3">
 <div class="step-num">3</div>
-<span class="step-label">Horario</span>
-</div>
-<div class="step-sep"></div>
-<div class="step-item" id="si-4">
-<div class="step-num">4</div>
 <span class="step-label">Tus datos</span>
 </div>
 </div>
 
-<!-- STEP 1: MEETING TYPE -->
+<!-- STEP 1: DATE -->
 <div class="step-content active" id="step-1">
-<div class="step-title">¿Qué tipo de reunión necesitás?</div>
-<div class="step-sub">Ambas son virtuales por Google Meet</div>
-
-<div class="type-grid">
-<button type="button" class="type-card" data-type="sesion" onclick="selectType('sesion')">
-<span class="type-name">Sesión de asesoría</span>
-<span class="type-duration">60 minutos</span>
-<span class="type-desc">Reunión completa de asesoría.</span>
-</button>
-<button type="button" class="type-card" data-type="followup" onclick="selectType('followup')">
-<span class="type-name">Follow up</span>
-<span class="type-duration">30 minutos</span>
-<span class="type-desc">Reunión breve de seguimiento.</span>
-</button>
-</div>
-</div>
-
-<!-- STEP 2: DATE -->
-<div class="step-content" id="step-2">
 <div class="step-title">Seleccioná una fecha</div>
 <div class="step-sub">Solo días hábiles (Lun–Vie, 9:00–20:00 hs Argentina)</div>
-
-<div class="selection-summary">
-<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-<span id="summary-type">—</span>
-</div>
 
 <div class="cal-nav">
 <button id="cal-prev" onclick="changeMonth(-1)">
@@ -708,12 +652,10 @@ Lunes a Viernes
 </div>
 
 <div class="cal-grid" id="cal-grid"></div>
-
-<button class="btn-ghost" onclick="goStep(1)">← Cambiar tipo de reunión</button>
 </div>
 
-<!-- STEP 3: TIME -->
-<div class="step-content" id="step-3">
+<!-- STEP 2: TIME -->
+<div class="step-content" id="step-2">
 <div class="step-title">Elegí un horario</div>
 <div class="step-sub" id="step2-sub">Horarios disponibles para la fecha seleccionada</div>
 
@@ -726,11 +668,11 @@ Lunes a Viernes
 <div class="slots-loading">Cargando horarios disponibles...</div>
 </div>
 
-<button class="btn-ghost" onclick="goStep(2)">← Cambiar fecha</button>
+<button class="btn-ghost" onclick="goStep(1)">← Cambiar fecha</button>
 </div>
 
-<!-- STEP 4: FORM -->
-<div class="step-content" id="step-4">
+<!-- STEP 3: FORM -->
+<div class="step-content" id="step-3">
 <div class="step-title">Completá tus datos</div>
 <div class="step-sub">Te enviamos la confirmación y el evento a tu calendario</div>
 
@@ -756,17 +698,17 @@ Lunes a Viernes
 Confirmar asesoría
 <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
 </button>
-<button type="button" class="btn-ghost" onclick="goStep(3)">← Cambiar horario</button>
+<button type="button" class="btn-ghost" onclick="goStep(2)">← Cambiar horario</button>
 </form>
 </div>
 
-<!-- STEP 5: SUCCESS -->
-<div class="step-content" id="step-5">
+<!-- STEP 4: SUCCESS -->
+<div class="step-content" id="step-4">
 <div class="success-screen">
 <div class="success-icon">
 <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
 </div>
-<h2 id="success-title">¡Asesoría confirmada!</h2>
+<h2>¡Asesoría confirmada!</h2>
 <p>Revisá tu correo. También recibirás una invitación directa en tu Google Calendar con todos los detalles.</p>
 
 <div class="booking-details" id="booking-summary"></div>
@@ -777,7 +719,7 @@ Confirmar asesoría
 · <a href="tel:+541166902515" style="color:var(--orange)">+54 11 6690 2515</a>
 </p>
 
-<button class="btn-restart" onclick="location.reload()">Agendar otra reunión</button>
+<button class="btn-restart" onclick="location.reload()">Agendar otra asesoría</button>
 </div>
 </div>
 
@@ -795,14 +737,6 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyUmHdoBAE3pY4nQWgyC
 
 let selectedDate = null;
 let selectedTime = null;
-let selectedType = null;
-let slotsRequestId = 0;
-
-const SESSION_TYPES = {
-sesion: { id: 'sesion', label: 'Sesión de asesoría', duration: 60, submitLabel: 'Confirmar asesoría', successTitle: '¡Asesoría confirmada!' },
-followup: { id: 'followup', label: 'Follow up', duration: 30, submitLabel: 'Confirmar follow up', successTitle: '¡Follow up confirmado!' },
-};
-
 let currentMonth = new Date();
 currentMonth.setDate(1);
 currentMonth.setHours(0,0,0,0);
@@ -816,30 +750,6 @@ const availableDaysCache = {};
 
 const MONTHS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const DAYS = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
-
-// ——— MEETING TYPE ———
-function typeSummary() {
-return '<strong>' + selectedType.label + ' · ' + selectedType.duration + ' min</strong>';
-}
-
-function selectType(id) {
-if (!selectedType || selectedType.id !== id) {
-selectedDate = null;
-selectedTime = null;
-}
-selectedType = SESSION_TYPES[id];
-document.querySelectorAll('.type-card').forEach(c => c.classList.toggle('selected', c.dataset.type === id));
-document.getElementById('summary-type').innerHTML = typeSummary();
-resetSubmitButton();
-renderCalendar();
-goStep(2);
-}
-
-function resetSubmitButton() {
-const btn = document.getElementById('submit-btn');
-btn.disabled = false;
-btn.innerHTML = selectedType.submitLabel + ' <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
-}
 
 // ——— CALENDAR ———
 function renderCalendar() {
@@ -900,7 +810,7 @@ selectedDate = dStr;
 selectedTime = null;
 renderCalendar();
 loadSlots(dStr);
-goStep(3);
+goStep(2);
 }
 
 function toDateStr(d) {
@@ -916,8 +826,7 @@ return d + ' de ' + MONTHS[m - 1] + ' de ' + y;
 async function loadSlots(dStr) {
 const container = document.getElementById('slots-container');
 const fmtDate = formatDateEs(dStr);
-const requestId = ++slotsRequestId;
-document.getElementById('summary-date').innerHTML = typeSummary() + ' · <strong>' + fmtDate + '</strong>';
+document.getElementById('summary-date').innerHTML = '<strong>' + fmtDate + '</strong>';
 document.getElementById('step2-sub').textContent = 'Horarios disponibles — ' + fmtDate;
 container.innerHTML = '<div class="slots-loading">Cargando horarios...</div>';
 
@@ -931,13 +840,11 @@ return;
 }
 
 try {
-const res = await fetch(SCRIPT_URL + '?action=getSlots&date=' + dStr + '&type=' + selectedType.id, { redirect: 'follow' });
+const res = await fetch(SCRIPT_URL + '?action=getSlots&date=' + dStr, { redirect: 'follow' });
 const data = await res.json();
-if (requestId !== slotsRequestId) return;
 if (!data.success) throw new Error(data.error);
 renderSlots(data.slots);
 } catch (err) {
-if (requestId !== slotsRequestId) return;
 container.innerHTML = '<div class="slots-empty">No se pudo cargar los horarios. Intentá de nuevo.</div>';
 }
 }
@@ -953,7 +860,7 @@ grid.className = 'slots-grid';
 slots.forEach(s => {
 const el = document.createElement('div');
 el.className = 'slot-card' + (s.time === selectedTime ? ' selected' : '');
-el.innerHTML = s.time + '<small>' + selectedType.duration + ' min</small>';
+el.innerHTML = s.time + '<small>60 min</small>';
 el.addEventListener('click', () => selectSlot(s.time, el, grid));
 grid.appendChild(el);
 });
@@ -966,9 +873,9 @@ grid.querySelectorAll('.slot-card').forEach(c => c.classList.remove('selected'))
 el.classList.add('selected');
 selectedTime = time;
 setTimeout(() => {
-document.getElementById('summary-date2').innerHTML = typeSummary() + ' · <strong>' + formatDateEs(selectedDate) + '</strong>';
+document.getElementById('summary-date2').innerHTML = '<strong>' + formatDateEs(selectedDate) + '</strong>';
 document.getElementById('summary-time').innerHTML = '<strong>' + time + ' hs</strong>';
-goStep(4);
+goStep(3);
 }, 200);
 }
 
@@ -998,7 +905,6 @@ btn.innerHTML = 'Confirmando...';
 const payload = {
 date: selectedDate,
 time: selectedTime,
-type: selectedType.id,
 name: document.getElementById('f-name').value.trim(),
 email: document.getElementById('f-email').value.trim(),
 };
@@ -1021,11 +927,13 @@ if (data.success) {
 showSuccess(payload);
 } else {
 showToast(data.error || 'Ocurrió un error. Intentá de nuevo.');
-resetSubmitButton();
+btn.disabled = false;
+btn.innerHTML = 'Confirmar asesoría <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
 }
 } catch (err) {
 showToast('Error de conexión. Verificá tu internet e intentá de nuevo.');
-resetSubmitButton();
+btn.disabled = false;
+btn.innerHTML = 'Confirmar asesoría';
 }
 }
 
@@ -1040,10 +948,9 @@ video: '<svg viewBox="0 0 24 24" width="15" height="15" stroke="#FF9C00" fill="n
 function showSuccess(payload) {
 const rows = [
 { icon: ICONS.user, label: 'Nombre', value: payload.name },
-{ icon: ICONS.video, label: 'Tipo', value: selectedType.label },
 { icon: ICONS.calendar, label: 'Fecha', value: formatDateEs(payload.date) },
 { icon: ICONS.clock, label: 'Hora', value: payload.time + ' hs (Argentina)' },
-{ icon: ICONS.clock, label: 'Duración', value: selectedType.duration + ' minutos' },
+{ icon: ICONS.clock, label: 'Duración', value: '60 minutos' },
 { icon: ICONS.video, label: 'Reunión', value: 'Google Meet (link por email)' },
 ];
 
@@ -1052,9 +959,8 @@ const html = rows.map(r =>
 ).join('');
 
 document.getElementById('booking-summary').innerHTML = html;
-document.getElementById('success-title').textContent = selectedType.successTitle;
 document.querySelector('.step-bar').style.display = 'none';
-goStep(5);
+goStep(4);
 }
 
 // ——— TOAST ———

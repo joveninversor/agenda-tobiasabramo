@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Agendá tu Follow up · Joven Inversor</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+--orange: #FF9C00;
+--orange-dark:#E08800;
+--dark: #1a1a1a;
+--dark2: #292929;
+--gray: #6b7280;
+--gray-light: #e5e7eb;
+--bg: #f7f6ff;
+--white: #ffffff;
+--success: #10b981;
+--error: #ef4444;
+--radius: 12px;
+--shadow: 0 4px 24px rgba(0,0,0,0.09);
+}
+
+body {
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+background: var(--bg);
+color: var(--dark);
+min-height: 100vh;
+}
+
+/* ——— HEADER ——— */
+header {
+background: var(--dark);
+padding: 16px 24px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.brand {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+header h1 {
+color: var(--white);
+font-size: 17px;
+font-weight: 700;
+letter-spacing: -0.3px;
+}
+
+header span.tagline {
+color: var(--gray);
+font-size: 13px;
+}
+
+/* ——— HERO ——— */
+.hero {
+background: var(--dark);
+color: var(--white);
+text-align: center;
+padding: 48px 24px 56px;
+position: relative;
+overflow: hidden;
+}
+
+.hero::before {
+content: '';
+position: absolute;
+top: -60px; right: -60px;
+width: 220px; height: 220px;
+background: var(--orange);
+border-radius: 50%;
+opacity: 0.08;
+}
+
+.hero::after {
+content: '';
+position: absolute;
+bottom: -80px; left: -40px;
+width: 260px; height: 260px;
+background: var(--orange);
+border-radius: 50%;
+opacity: 0.05;
+}
+
+.hero-logo {
+margin-bottom: 20px;
+}
+
+.hero h2 {
+font-size: clamp(22px, 4vw, 34px);
+font-weight: 800;
+line-height: 1.2;
+margin-bottom: 12px;
+}
+
+.hero h2 span { color: var(--orange); }
+
+.hero p {
+color: #9ca3af;
+font-size: 15px;
+max-width: 480px;
+margin: 0 auto 24px;
+line-height: 1.6;
+}
+
+.hero-pills {
+display: flex;
+justify-content: center;
+gap: 10px;
+flex-wrap: wrap;
+}
+
+.pill {
+background: rgba(255,255,255,0.08);
+border: 1px solid rgba(255,255,255,0.12);
+color: #d1d5db;
+font-size: 13px;
+padding: 6px 14px;
+border-radius: 999px;
+display: flex;
+align-items: center;
+gap: 7px;
+}
+
+/* SVG icons in pills */
+.pill svg {
+width: 14px;
+height: 14px;
+stroke: var(--orange);
+fill: none;
+stroke-width: 2;
+stroke-linecap: round;
+stroke-linejoin: round;
+flex-shrink: 0;
+}
+
+/* ——— MAIN CONTAINER ——— */
+.container {
+max-width: 700px;
+margin: -24px auto 48px;
+padding: 0 16px;
+position: relative;
+z-index: 1;
+}
+
+/* ——— CARD ——— */
+.card {
+background: var(--white);
+border-radius: var(--radius);
+box-shadow: var(--shadow);
+overflow: hidden;
+}
+
+/* ——— STEP INDICATOR ——— */
+.step-bar {
+padding: 20px 24px;
+border-bottom: 1px solid var(--gray-light);
+display: flex;
+align-items: center;
+}
+
+.step-item {
+display: flex;
+align-items: center;
+gap: 8px;
+flex: 1;
+}
+
+.step-num {
+width: 28px; height: 28px;
+border-radius: 50%;
+background: var(--gray-light);
+color: var(--gray);
+font-size: 12px;
+font-weight: 700;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+transition: all 0.25s;
+}
+
+.step-num svg {
+width: 13px; height: 13px;
+stroke: var(--white);
+fill: none;
+stroke-width: 2.5;
+stroke-linecap: round;
+stroke-linejoin: round;
+}
+
+.step-item.active .step-num { background: var(--orange); color: var(--dark); }
+.step-item.done .step-num { background: var(--success); color: var(--white); }
+
+.step-label {
+font-size: 12px;
+color: var(--gray);
+font-weight: 500;
+white-space: nowrap;
+}
+
+.step-item.active .step-label { color: var(--dark); font-weight: 600; }
+.step-item.done .step-label { color: var(--success); }
+
+.step-sep {
+height: 1px;
+flex: 1;
+background: var(--gray-light);
+margin: 0 8px;
+}
+
+/* ——— STEP CONTENT ——— */
+.step-content { display: none; padding: 28px 24px; }
+.step-content.active { display: block; }
+
+.step-title {
+font-size: 17px;
+font-weight: 700;
+color: var(--dark);
+margin-bottom: 4px;
+}
+
+.step-sub {
+font-size: 13px;
+color: var(--gray);
+margin-bottom: 24px;
+}
+
+/* ——— CALENDAR ——— */
+.cal-nav {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 16px;
+}
+
+.cal-nav button {
+background: none;
+border: 1px solid var(--gray-light);
+border-radius: 8px;
+width: 34px; height: 34px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: background 0.15s;
+}
+
+.cal-nav button:hover:not(:disabled) { background: var(--bg); border-color: var(--orange); }
+.cal-nav button:disabled { opacity: 0.3; cursor: default; }
+
+.cal-nav button svg {
+width: 16px; height: 16px;
+stroke: var(--dark2);
+fill: none;
+stroke-width: 2;
+stroke-linecap: round;
+stroke-linejoin: round;
+}
+
+.cal-month-label {
+font-weight: 700;
+font-size: 15px;
+text-transform: capitalize;
+}
+
+.cal-grid {
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+gap: 4px;
+}
+
+.cal-day-name {
+text-align: center;
+font-size: 11px;
+font-weight: 600;
+color: var(--gray);
+padding: 6px 0;
+text-transform: uppercase;
+}
+
+.cal-day {
+aspect-ratio: 1;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 8px;
+font-size: 13px;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.15s;
+border: 1.5px solid transparent;
+}
+
+.cal-day:hover:not(.disabled):not(.empty):not(.weekend) { background: var(--bg); border-color: var(--orange); }
+.cal-day.today { font-weight: 700; color: var(--orange); }
+.cal-day.selected { background: var(--orange); color: var(--dark); border-color: var(--orange); font-weight: 700; }
+.cal-day.disabled { color: var(--gray-light); cursor: default; }
+.cal-day.weekend { color: #cbd5e1; cursor: default; }
+.cal-day.empty { cursor: default; }
+
+/* ——— TIME SLOTS ——— */
+.slots-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+gap: 10px;
+margin-top: 16px;
+}
+
+.slot-card {
+border: 1.5px solid var(--gray-light);
+border-radius: 10px;
+padding: 12px;
+text-align: center;
+cursor: pointer;
+transition: all 0.15s;
+font-size: 14px;
+font-weight: 600;
+color: var(--dark2);
+}
+
+.slot-card:hover { border-color: var(--orange); background: #fff8ec; }
+.slot-card.selected { border-color: var(--orange); background: var(--orange); color: var(--dark); }
+
+.slot-card small {
+display: block;
+font-size: 11px;
+font-weight: 400;
+color: var(--gray);
+margin-top: 3px;
+}
+
+.slot-card.selected small { color: var(--dark2); }
+
+.slots-loading, .slots-empty {
+text-align: center;
+padding: 32px;
+color: var(--gray);
+font-size: 14px;
+}
+
+/* ——— SELECTION SUMMARY ——— */
+.selection-summary {
+background: var(--bg);
+border-radius: 10px;
+padding: 12px 16px;
+margin-bottom: 20px;
+font-size: 14px;
+color: var(--dark2);
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.selection-summary svg {
+width: 15px; height: 15px;
+stroke: var(--orange);
+fill: none;
+stroke-width: 2;
+stroke-linecap: round;
+stroke-linejoin: round;
+flex-shrink: 0;
+}
+
+.selection-summary strong { color: var(--orange); }
+
+/* ——— FORM ——— */
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+
+label {
+font-size: 13px;
+font-weight: 600;
+color: var(--dark2);
+}
+
+input {
+border: 1.5px solid var(--gray-light);
+border-radius: 8px;
+padding: 10px 14px;
+font-size: 14px;
+font-family: inherit;
+color: var(--dark);
+outline: none;
+transition: border-color 0.15s;
+width: 100%;
+}
+
+input:focus { border-color: var(--orange); }
+
+/* ——— BUTTONS ——— */
+.btn-primary {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+padding: 13px 28px;
+border-radius: 10px;
+font-size: 15px;
+font-weight: 700;
+cursor: pointer;
+border: none;
+transition: all 0.2s;
+font-family: inherit;
+background: var(--orange);
+color: var(--dark);
+width: 100%;
+margin-top: 20px;
+}
+
+.btn-primary svg {
+width: 16px; height: 16px;
+stroke: var(--dark);
+fill: none;
+stroke-width: 2.5;
+stroke-linecap: round;
+stroke-linejoin: round;
+}
+
+.btn-primary:hover:not(:disabled) { background: var(--orange-dark); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.5; cursor: default; transform: none; }
+
+.btn-ghost {
+background: none;
+border: none;
+color: var(--gray);
+font-size: 13px;
+padding: 8px 0;
+cursor: pointer;
+font-family: inherit;
+display: block;
+text-align: center;
+width: 100%;
+margin-top: 8px;
+}
+
+.btn-ghost:hover { color: var(--dark); }
+
+/* ——— SUCCESS SCREEN ——— */
+.success-screen {
+text-align: center;
+padding: 40px 24px;
+}
+
+.success-icon {
+width: 64px; height: 64px;
+background: #d1fae5;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 0 auto 20px;
+}
+
+.success-icon svg {
+width: 28px; height: 28px;
+stroke: var(--success);
+fill: none;
+stroke-width: 2.5;
+stroke-linecap: round;
+stroke-linejoin: round;
+}
+
+.success-screen h2 {
+font-size: 22px;
+font-weight: 800;
+margin-bottom: 8px;
+}
+
+.success-screen p {
+color: var(--gray);
+font-size: 14px;
+max-width: 380px;
+margin: 0 auto 24px;
+line-height: 1.6;
+}
+
+.booking-details {
+background: var(--bg);
+border-radius: 10px;
+padding: 18px 20px;
+text-align: left;
+margin: 20px 0;
+}
+
+.booking-detail-row {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 8px 0;
+font-size: 14px;
+border-bottom: 1px solid #e9e9f0;
+}
+
+.booking-detail-row:last-child { border-bottom: none; }
+
+.booking-detail-row svg {
+width: 15px; height: 15px;
+stroke: var(--orange);
+fill: none;
+stroke-width: 2;
+stroke-linecap: round;
+stroke-linejoin: round;
+flex-shrink: 0;
+}
+
+.booking-detail-row .label { color: var(--gray); width: 90px; flex-shrink: 0; }
+.booking-detail-row .value { font-weight: 600; }
+
+.btn-restart {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+background: var(--orange);
+color: var(--dark);
+border: none;
+border-radius: 10px;
+padding: 12px 24px;
+font-size: 14px;
+font-weight: 700;
+cursor: pointer;
+font-family: inherit;
+margin-top: 8px;
+}
+
+.btn-restart:hover { background: var(--orange-dark); }
+
+/* ——— TOAST ——— */
+.toast {
+position: fixed;
+bottom: 24px;
+left: 50%;
+transform: translateX(-50%) translateY(80px);
+background: var(--error);
+color: white;
+padding: 12px 20px;
+border-radius: 10px;
+font-size: 14px;
+font-weight: 500;
+box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+z-index: 999;
+max-width: 90vw;
+text-align: center;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ——— FOOTER ——— */
+.footer {
+text-align: center;
+padding: 20px;
+font-size: 12px;
+color: var(--gray);
+}
+
+.footer a { color: var(--orange); text-decoration: none; }
+
+@media (max-width: 480px) {
+header span.tagline { display: none; }
+.step-label { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="brand">
+<svg width="32" height="32" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.5 0H7V36.5C7 40.1 5.66667 41 5 41H0V46.5C11.6 48.5 13.8333 43 13.5 40V0Z" fill="#FF9C00"/>
+<path d="M22.5 0H16.5V6.5H22.5V0Z" fill="#FF9C00"/>
+<path d="M22.5 8H16.5V46.5H22.5V8Z" fill="#FF9C00"/>
+<path d="M33 0H39.5V36.5C39.5 40.1 40.8333 41 41.5 41H46.5V46.5C34.9 48.5 32.6667 43 33 40V0Z" fill="#FF9C00"/>
+<path d="M24 0H30V6.5H24V0Z" fill="#FF9C00"/>
+<path d="M24 8H30V46.5H24V8Z" fill="#FF9C00"/>
+</svg>
+<h1>Joven Inversor</h1>
+</div>
+<span class="tagline">Sistema de Agendamiento</span>
+</header>
+
+<div class="hero">
+<div class="hero-logo">
+<svg width="44" height="44" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.5 0H7V36.5C7 40.1 5.66667 41 5 41H0V46.5C11.6 48.5 13.8333 43 13.5 40V0Z" fill="#FF9C00"/>
+<path d="M22.5 0H16.5V6.5H22.5V0Z" fill="#FF9C00"/>
+<path d="M22.5 8H16.5V46.5H22.5V8Z" fill="#FF9C00"/>
+<path d="M33 0H39.5V36.5C39.5 40.1 40.8333 41 41.5 41H46.5V46.5C34.9 48.5 32.6667 43 33 40V0Z" fill="#FF9C00"/>
+<path d="M24 0H30V6.5H24V0Z" fill="#FF9C00"/>
+<path d="M24 8H30V46.5H24V8Z" fill="#FF9C00"/>
+</svg>
+</div>
+<h2>Agendá tu <span>Follow up</span></h2>
+<p>Elegí el día y horario que mejor te quede. La reunión es 100% virtual por Google Meet.</p>
+<div class="hero-pills">
+<div class="pill">
+<!-- clock icon -->
+<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+30 minutos
+</div>
+<div class="pill">
+<!-- video icon -->
+<svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+Google Meet
+</div>
+<div class="pill">
+<!-- calendar icon -->
+<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+Lunes a Viernes
+</div>
+</div>
+</div>
+
+<div class="container">
+<div class="card">
+
+<!-- STEP BAR -->
+<div class="step-bar">
+<div class="step-item active" id="si-1">
+<div class="step-num">1</div>
+<span class="step-label">Fecha</span>
+</div>
+<div class="step-sep"></div>
+<div class="step-item" id="si-2">
+<div class="step-num">2</div>
+<span class="step-label">Horario</span>
+</div>
+<div class="step-sep"></div>
+<div class="step-item" id="si-3">
+<div class="step-num">3</div>
+<span class="step-label">Tus datos</span>
+</div>
+</div>
+
+<!-- STEP 1: DATE -->
+<div class="step-content active" id="step-1">
+<div class="step-title">Seleccioná una fecha</div>
+<div class="step-sub">Solo días hábiles (Lun–Vie, 9:00–20:00 hs Argentina)</div>
+
+<div class="cal-nav">
+<button id="cal-prev" onclick="changeMonth(-1)">
+<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+</button>
+<span class="cal-month-label" id="cal-label"></span>
+<button id="cal-next" onclick="changeMonth(1)">
+<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+</button>
+</div>
+
+<div class="cal-grid" id="cal-grid"></div>
+</div>
+
+<!-- STEP 2: TIME -->
+<div class="step-content" id="step-2">
+<div class="step-title">Elegí un horario</div>
+<div class="step-sub" id="step2-sub">Horarios disponibles para la fecha seleccionada</div>
+
+<div class="selection-summary">
+<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span id="summary-date">—</span>
+</div>
+
+<div id="slots-container">
+<div class="slots-loading">Cargando horarios disponibles...</div>
+</div>
+
+<button class="btn-ghost" onclick="goStep(1)">← Cambiar fecha</button>
+</div>
+
+<!-- STEP 3: FORM -->
+<div class="step-content" id="step-3">
+<div class="step-title">Completá tus datos</div>
+<div class="step-sub">Te enviamos la confirmación y el evento a tu calendario</div>
+
+<div class="selection-summary">
+<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span id="summary-date2">—</span>
+&nbsp;·&nbsp;
+<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+<strong id="summary-time">—</strong>
+</div>
+
+<form id="booking-form" onsubmit="submitBooking(event)">
+<div class="form-group">
+<label for="f-name">Nombre completo</label>
+<input type="text" id="f-name" placeholder="Tu nombre y apellido" required autocomplete="name" />
+</div>
+<div class="form-group">
+<label for="f-email">Correo electrónico</label>
+<input type="email" id="f-email" placeholder="tu@correo.com" required autocomplete="email" />
+</div>
+
+<button type="submit" class="btn-primary" id="submit-btn">
+Confirmar follow up
+<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+</button>
+<button type="button" class="btn-ghost" onclick="goStep(2)">← Cambiar horario</button>
+</form>
+</div>
+
+<!-- STEP 4: SUCCESS -->
+<div class="step-content" id="step-4">
+<div class="success-screen">
+<div class="success-icon">
+<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+</div>
+<h2>¡Follow up confirmado!</h2>
+<p>Revisá tu correo. También recibirás una invitación directa en tu Google Calendar con todos los detalles.</p>
+
+<div class="booking-details" id="booking-summary"></div>
+
+<p style="font-size:13px; color:#9ca3af; margin-top:16px;">
+¿Necesitás reprogramar? Escribinos a
+<a href="mailto:administración@joveninversor.com" style="color:var(--orange)">administracion@joveninversor.com</a>
+· <a href="tel:+541166902515" style="color:var(--orange)">+54 11 6690 2515</a>
+</p>
+
+<button class="btn-restart" onclick="location.reload()">Agendar otro follow up</button>
+</div>
+</div>
+
+</div>
+
+<div class="footer">
+<a href="https://joveninversor.com" target="_blank">joveninversor.com</a> · Joven Inversor
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyUmHdoBAE3pY4nQWgyCQ1DujVvjxNrDCU1R6t1A7XkXrUzlGSd9phMOy0YkfbVbLo/exec';
+
+let selectedDate = null;
+let selectedTime = null;
+let currentMonth = new Date();
+currentMonth.setDate(1);
+currentMonth.setHours(0,0,0,0);
+
+const MIN_MONTH = new Date();
+MIN_MONTH.setDate(1);
+MIN_MONTH.setHours(0,0,0,0);
+
+// Cache de días disponibles por mes (key: "YYYY-MM")
+const availableDaysCache = {};
+
+const MONTHS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const DAYS = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+
+// ——— CALENDAR ———
+function renderCalendar() {
+const y = currentMonth.getFullYear();
+const m = currentMonth.getMonth();
+const grid = document.getElementById('cal-grid');
+const label = document.getElementById('cal-label');
+
+label.textContent = MONTHS[m] + ' ' + y;
+
+const sameMin = (y === MIN_MONTH.getFullYear() && m <= MIN_MONTH.getMonth());
+document.getElementById('cal-prev').disabled = sameMin;
+const maxDate = new Date(); maxDate.setMonth(maxDate.getMonth() + 2);
+document.getElementById('cal-next').disabled = y > maxDate.getFullYear() || (y === maxDate.getFullYear() && m >= maxDate.getMonth());
+
+grid.innerHTML = '';
+DAYS.forEach(d => {
+const el = document.createElement('div');
+el.className = 'cal-day-name';
+el.textContent = d;
+grid.appendChild(el);
+});
+
+const firstDow = new Date(y, m, 1).getDay();
+const daysInMon = new Date(y, m + 1, 0).getDate();
+const today = new Date(); today.setHours(0,0,0,0);
+
+for (let i = 0; i < firstDow; i++) {
+const el = document.createElement('div'); el.className = 'cal-day empty'; grid.appendChild(el);
+}
+
+for (let d = 1; d <= daysInMon; d++) {
+const date = new Date(y, m, d);
+const dow = date.getDay();
+const dStr = toDateStr(date);
+const el = document.createElement('div');
+el.className = 'cal-day';
+el.textContent = d;
+
+if (date < today) el.classList.add('disabled');
+else if (dow === 0 || dow === 6) el.classList.add('weekend');
+else {
+if (date.getTime() === today.getTime()) el.classList.add('today');
+if (dStr === selectedDate) el.classList.add('selected');
+el.addEventListener('click', () => selectDate(dStr));
+}
+grid.appendChild(el);
+}
+}
+
+function changeMonth(dir) {
+currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + dir, 1);
+renderCalendar();
+}
+
+function selectDate(dStr) {
+selectedDate = dStr;
+selectedTime = null;
+renderCalendar();
+loadSlots(dStr);
+goStep(2);
+}
+
+function toDateStr(d) {
+return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function formatDateEs(dStr) {
+const [y, m, d] = dStr.split('-').map(Number);
+return d + ' de ' + MONTHS[m - 1] + ' de ' + y;
+}
+
+// ——— SLOTS ———
+async function loadSlots(dStr) {
+const container = document.getElementById('slots-container');
+const fmtDate = formatDateEs(dStr);
+document.getElementById('summary-date').innerHTML = '<strong>' + fmtDate + '</strong>';
+document.getElementById('step2-sub').textContent = 'Horarios disponibles — ' + fmtDate;
+container.innerHTML = '<div class="slots-loading">Cargando horarios...</div>';
+
+if (!SCRIPT_URL || SCRIPT_URL === 'TU_URL_AQUI') {
+await new Promise(r => setTimeout(r, 600));
+renderSlots([
+{time:'09:00'},{time:'10:00'},{time:'11:00'},
+{time:'14:00'},{time:'15:00'},{time:'16:00'}
+]);
+return;
+}
+
+try {
+const res = await fetch(SCRIPT_URL + '?action=getSlots&date=' + dStr + '&type=followup', { redirect: 'follow' });
+const data = await res.json();
+if (!data.success) throw new Error(data.error);
+renderSlots(data.slots);
+} catch (err) {
+container.innerHTML = '<div class="slots-empty">No se pudo cargar los horarios. Intentá de nuevo.</div>';
+}
+}
+
+function renderSlots(slots) {
+const container = document.getElementById('slots-container');
+if (!slots || !slots.length) {
+container.innerHTML = '<div class="slots-empty">Sin horarios disponibles para este día. Probá con otra fecha.</div>';
+return;
+}
+const grid = document.createElement('div');
+grid.className = 'slots-grid';
+slots.forEach(s => {
+const el = document.createElement('div');
+el.className = 'slot-card' + (s.time === selectedTime ? ' selected' : '');
+el.innerHTML = s.time + '<small>30 min</small>';
+el.addEventListener('click', () => selectSlot(s.time, el, grid));
+grid.appendChild(el);
+});
+container.innerHTML = '';
+container.appendChild(grid);
+}
+
+function selectSlot(time, el, grid) {
+grid.querySelectorAll('.slot-card').forEach(c => c.classList.remove('selected'));
+el.classList.add('selected');
+selectedTime = time;
+setTimeout(() => {
+document.getElementById('summary-date2').innerHTML = '<strong>' + formatDateEs(selectedDate) + '</strong>';
+document.getElementById('summary-time').innerHTML = '<strong>' + time + ' hs</strong>';
+goStep(3);
+}, 200);
+}
+
+// ——— NAVIGATION ———
+function goStep(n) {
+document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+document.getElementById('step-' + n).classList.add('active');
+document.querySelectorAll('.step-item').forEach((el, i) => {
+el.classList.remove('active', 'done');
+const num = el.querySelector('.step-num');
+if (i + 1 < n) { el.classList.add('done'); num.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'; }
+if (i + 1 === n) { el.classList.add('active'); num.textContent = i + 1; }
+if (i + 1 > n) { num.textContent = i + 1; }
+});
+window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ——— SUBMIT ———
+async function submitBooking(e) {
+e.preventDefault();
+if (!selectedDate || !selectedTime) return;
+
+const btn = document.getElementById('submit-btn');
+btn.disabled = true;
+btn.innerHTML = 'Confirmando...';
+
+const payload = {
+date: selectedDate,
+time: selectedTime,
+type: 'followup',
+name: document.getElementById('f-name').value.trim(),
+email: document.getElementById('f-email').value.trim(),
+};
+
+if (!SCRIPT_URL || SCRIPT_URL === 'TU_URL_AQUI') {
+await new Promise(r => setTimeout(r, 1200));
+showSuccess(payload);
+return;
+}
+
+try {
+const res = await fetch(SCRIPT_URL, {
+method: 'POST',
+headers: { 'Content-Type': 'text/plain' },
+body: JSON.stringify(payload),
+redirect: 'follow'
+});
+const data = await res.json();
+if (data.success) {
+showSuccess(payload);
+} else {
+showToast(data.error || 'Ocurrió un error. Intentá de nuevo.');
+btn.disabled = false;
+btn.innerHTML = 'Confirmar follow up <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+}
+} catch (err) {
+showToast('Error de conexión. Verificá tu internet e intentá de nuevo.');
+btn.disabled = false;
+btn.innerHTML = 'Confirmar follow up';
+}
+}
+
+// Icon SVGs for booking summary
+const ICONS = {
+user: '<svg viewBox="0 0 24 24" width="15" height="15" stroke="#FF9C00" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+calendar: '<svg viewBox="0 0 24 24" width="15" height="15" stroke="#FF9C00" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+clock: '<svg viewBox="0 0 24 24" width="15" height="15" stroke="#FF9C00" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+video: '<svg viewBox="0 0 24 24" width="15" height="15" stroke="#FF9C00" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
+};
+
+function showSuccess(payload) {
+const rows = [
+{ icon: ICONS.user, label: 'Nombre', value: payload.name },
+{ icon: ICONS.calendar, label: 'Fecha', value: formatDateEs(payload.date) },
+{ icon: ICONS.clock, label: 'Hora', value: payload.time + ' hs (Argentina)' },
+{ icon: ICONS.clock, label: 'Duración', value: '30 minutos' },
+{ icon: ICONS.video, label: 'Reunión', value: 'Google Meet (link por email)' },
+];
+
+const html = rows.map(r =>
+`<div class="booking-detail-row">${r.icon}<span class="label">${r.label}</span><span class="value">${r.value}</span></div>`
+).join('');
+
+document.getElementById('booking-summary').innerHTML = html;
+document.querySelector('.step-bar').style.display = 'none';
+goStep(4);
+}
+
+// ——— TOAST ———
+let toastTimer;
+function showToast(msg) {
+const t = document.getElementById('toast');
+t.textContent = msg;
+t.classList.add('show');
+clearTimeout(toastTimer);
+toastTimer = setTimeout(() => t.classList.remove('show'), 4500);
+}
+
+renderCalendar();
+</script>
+</body>
+</html>
